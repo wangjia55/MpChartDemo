@@ -61,9 +61,14 @@ public abstract class AbstractBarLineChartFactory<T extends BarLineScatterCandle
 		mBarLineChartBase.getViewPortHandler().setMinimumScaleY(AXIS_DEFAULT_SCALE);
 		mBarLineChartBase.setDoubleTapToZoomEnabled(false);
 		mBarLineChartBase.setScaleEnabled(true);
+		mBarLineChartBase.setScaleXEnabled(true);
+		mBarLineChartBase.setScaleYEnabled(false);
+		mBarLineChartBase.setMaxVisibleValueCount(6);
+
+		mBarLineChartBase.setViewPortOffsets(60, 50,50,50);
 		mBarLineChartBase.setHighlightEnabled(false);
 		mBarLineChartBase.setData(getData());
-		mBarLineChartBase.getLegend().setEnabled(true);    // You need to set data for the chart before calling this method
+		mBarLineChartBase.getLegend().setEnabled(false);    // You need to set data for the chart before calling this method
 		mBarLineChartBase.setDescription("");
 
 		// Setup X xAxis
@@ -75,6 +80,7 @@ public abstract class AbstractBarLineChartFactory<T extends BarLineScatterCandle
 		xAxis.setLabelsToSkip(LABELS_TO_SKIP);
 		xAxis.setDrawAxisLine(false);
 		xAxis.setAvoidFirstLastClipping(false);
+
 
 		// Setup Y yAxis
 		YAxis yAxis = mBarLineChartBase.getAxisLeft();
