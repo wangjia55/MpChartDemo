@@ -3,10 +3,13 @@ package com.wqdata.net.chart;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.ChartData;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
@@ -36,11 +39,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mChartContainer = (LinearLayout)findViewById(R.id.linear_temperature_history_chart_container);
         mPeriodTempItemList=new ArrayList<TemperatureDatas>();
         mPartChart = new LineChartFactory(this, mPeriodTempItemList).create();//初始化阶段性体温数据图表
-        mPartChart.fitScreen();
-        mPartChart.computeScroll();
-        mPartChart.setMaxVisibleValueCount(6);
-        mPartChart.setScaleXEnabled(true);
-        mPartChart.disableFiltering();
         mChartContainer.addView(mPartChart, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
 
     }
@@ -50,10 +48,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         public void run() {
             TemperatureDatas datas  = new TemperatureDatas();
             datas.setBabyId("");
-            datas.setData(36 + new Random().nextInt(2));
+            datas.setData(36 + new Random().nextInt(6));
             datas.setTime(System.currentTimeMillis());
             addEntry(datas);
-            mHandler.postDelayed(mChartRunnable,2000);
+            mHandler.postDelayed(mChartRunnable, 2000);
         }
     };
 
@@ -81,16 +79,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Date date=new Date(temperatureDatas.getTime());
             DateFormat format=new SimpleDateFormat("HH:mm");
             String time=format.format(date);
-            if(Integer.parseInt(new SimpleDateFormat("mm").format(date))%2==0)
-            {
-                data.addXValue(time);
-            }
-            else{
-                data.addXValue("");
-            }
+            data.addXValue(time);
+            int count = data.getXValCount() ;
             data.addEntry(new Entry(temperatureDatas.getData(), set.getEntryCount()), 0);
             mPartChart.notifyDataSetChanged();
             mPartChart.postInvalidate();
+
+            //以下是关键代码
+            mPartChart.setScaleMinima((float) data.getXValCount() / 10f, 1f);
+            mPartChart.moveViewToX(count);
         }
     }
 
